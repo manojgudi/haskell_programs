@@ -1,6 +1,48 @@
 Using Jekor tutorials from youtube
+------------
 
-Ep1
+### Ep1
 nothing fancy, creating a redo.do shell script that compiles redo.hs
-
 redo.hs binary cannot compile itself
+
+### Ep2
+ghci file_name (is equivalent of entering ghci and then :load filename
+
+ghci only loads interpreted code files (so rm *.o compiled Module) file
+*NOTE* when Main is loaded as interpreted module it looks like this
+Main* >
+
+To interpret use:
+>:l *redo
+> :step main
+
+or remove *.o file and then load redo
+>:l redo
+> :step main
+
+the line `Stopped at redo.hs: (3,8)-(5,11) Line 3 Col 8 to Line 5 Col 11
+> :step
+step twice to go to different parts of expression
+
+> _result is result obtained from expression
+to see content, do since _result doesn't derive from show class
+> :print _result
+_t1 means an unevaluated result, to force evaluation do
+:force _t1
+
+```
+_t1 = CreateProcess
+(ShellCommand "sh redo.do") Nothing Nothing Inherit Inherit Inherit
+        False False
+```
+
+The Issue was, the **shell** command runs a different child process, this redo binary exists before
+Hence the ./redo binary doesn't compile, inserting a breakpoint in binary in redo might make it work
+
+a  fix it is-> use waitForProcess
+
+```sh
+$ ./redo redo invalidfile
+[1 of 1] Compiling Main             ( redo.hs, redo.o )
+sh: 0: Can't open invalidfile.do
+```
